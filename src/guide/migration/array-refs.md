@@ -1,20 +1,20 @@
 ---
-title: v-for Array Refs
+title: v-for Refs Dizileri
 badges:
-- breaking
+- kırıcı
 ---
 
 # {{ $frontmatter.title }} <MigrationBadges :badges="$frontmatter.badges" />
 
-In Vue 2, using the `ref` attribute inside `v-for` will populate the corresponding `$refs` property with an array of refs. This behavior becomes ambiguous and inefficient when there are nested `v-for`s present.
+Vue 2'de `ref` niteliğini `v-for` içerisinde kullanmak ilişkili `$refs` değerini bir refs dizisi ile dolduruyordu. Bu işleyiş birbiri içerisine yerleştirilmiş `v-for`lar için anlaşılması zor ve verimsiz bir sonuç ortaya koyuyordu.
 
-In Vue 3, such usage will no longer automatically create an array in `$refs`. To retrieve multiple refs from a single binding, bind `ref` to a function which provides more flexibility (this is a new feature):
+Vue 3'de bu yöntem `$refs` içerisinde otomatik olarak bir dizi oluşturmayacak. Tek bir bağ aracılığıyla birçok refs elde etmek için `ref`i bir fonksiyona bağlayın. Bu teknik daha fazla esneklik temin edecektir (bu teknik Vue 3'ün yeniliklerinden biri):
 
 ```html
 <div v-for="item in list" :ref="setItemRef"></div>
 ```
 
-With Options API:
+Seçenekler API'si kullanıldığında:
 
 ```js
 export default {
@@ -39,7 +39,7 @@ export default {
 }
 ```
 
-With Composition API:
+Birleşim API'si kullanıldığında:
 
 ```js
 import { onBeforeUpdate, onUpdated } from 'vue'
@@ -65,8 +65,8 @@ export default {
 }
 ```
 
-Note that:
+Not:
 
-- `itemRefs` doesn't have to be an array: it can also be an object where the refs are set by their iteration keys.
+- `itemRefs` bir dizi olmak zorunda değil: Bir nesne de olabilir ve refs'ler iteration öğesi ile tayin edilir.
 
-- This also allows `itemRefs` to be made reactive and watched, if needed.
+- Bu sayede gerekli olması halinde `itemRefs` reaktifleştirilebilir ve watch yöntemiyle izlenebilir.
