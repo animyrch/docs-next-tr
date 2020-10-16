@@ -1,29 +1,29 @@
 ---
 badges:
-  - new
+  - yeni
 ---
 
-# Async Components <MigrationBadges :badges="$frontmatter.badges" />
+# Asenkron Bileşenler <MigrationBadges :badges="$frontmatter.badges" />
 
-## Overview
+## Genel Bakış
 
-Here is a high level overview of what has changed:
+Değişikliklere dair özet bilgileri aşağıda bulabilirsiniz:
 
-- New `defineAsyncComponent` helper method that explicitly defines async components
-- `component` option renamed to `loader`
-- Loader function does not inherently receive `resolve` and `reject` arguments and must return a Promise
+- Yeni `defineAsyncComponent` yardımcı metodu asenkron bileşenleri açıkça tanımlamayı sağlıyor
+- `component` seçeneğinin adı `loader`olarak değiştirildi
+- Loader fonksiyonu kendiliğinden `resolve` ve `reject` argümanlarına ihtiyaç duymuyor ve mutlaka bir Promise göndermesi gerekiyor
 
-For a more in-depth explanation, read on!
+Aşağıda bu yeniliklere dair daha detaylı açıklamaları bulabilirsiniz!
 
-## Introduction
+## Giriş
 
-Previously, async components were created by simply defining a component as a function that returned a promise, such as:
+Şimdiye kadar asenkron bileşenler bir promise gönderen bir fonksiyonun tanımlanmasıyla oluşturuluyordu. Örneğin:
 
 ```js
 const asyncPage = () => import('./NextPage.vue')
 ```
 
-Or, for the more advanced component syntax with options:
+Veya daha ileri düzey, seçenekler içeren bir bileşen sentaksi ile örnek verecek olursak:
 
 ```js
 const asyncPage = {
@@ -35,9 +35,9 @@ const asyncPage = {
 }
 ```
 
-## 3.x Syntax
+## 3.x Sentaksı
 
-Now, in Vue 3, since functional components are defined as pure functions, async components definitions need to be explicitly defined by wrapping it in a new `defineAsyncComponent` helper:
+Şu andan itibaren, Vue 3'de fonksiyonel bileşenler saf fonksiyonlar olarak tanımlandığı için asenkron bileşenlerin yeni `defineAsyncComponent` yardımcı methodu kullanılarak açık bir şekilde tanımlanması gerekiyor:
 
 ```js
 import { defineAsyncComponent } from 'vue'
@@ -57,7 +57,7 @@ const asyncPageWithOptions = defineAsyncComponent({
 })
 ```
 
-Another change that has been made from 2.x is that the `component` option is now renamed to `loader` in order to accurately communicate that a component definition cannot be provided directly.
+2.x'e kıyasla farklılık gösteren bir diğer yenilik `component` seçeneğinin adının `loader` olarak değiştirilmesi. Bu değişikliğin sebebi bir bileşen tanımının doğrudan kullanılamayacağını doğru bir şekilde ifade edebilmek.
 
 ```js{4}
 import { defineAsyncComponent } from 'vue'
@@ -71,15 +71,15 @@ const asyncPageWithOptions = defineAsyncComponent({
 })
 ```
 
-In addition, unlike 2.x, the loader function no longer receives the `resolve` and `reject` arguments and must always return a Promise.
+Ayrıca 2.x'nin tersine loader fonksiyonu artık `resolve` ve `reject` parametrelerini almıyor ve her daim bir Promise göndermesi gerekiyor.
 
 ```js
-// 2.x version
+// 2.x versiyonu
 const oldAsyncComponent = (resolve, reject) => {
   /* ... */
 }
 
-// 3.x version
+// 3.x versiyonu
 const asyncComponent = defineAsyncComponent(
   () =>
     new Promise((resolve, reject) => {
@@ -88,6 +88,6 @@ const asyncComponent = defineAsyncComponent(
 )
 ```
 
-For more information on the usage of async components, see:
+Asenkron bileşenlerin kullanımı hakkında daha fazla bilgi için şu başlığa bakabilirsiniz:
 
-- [Guide: Dynamic & Async Components](/guide/component-dynamic-async.html#dynamic-components-with-keep-alive)
+- [Kılavuz: Dinamik ve Asenkron Bileşenler](/guide/component-dynamic-async.html#dynamic-components-with-keep-alive)
