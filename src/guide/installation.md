@@ -76,7 +76,7 @@ Vue projects can quickly be set up with Vite by running the following commands i
 With npm:
 
 ```bash
-$ npm init vite-app <project-name>
+$ npm init @vitejs/app <project-name>
 $ cd <project-name>
 $ npm install
 $ npm run dev
@@ -85,7 +85,7 @@ $ npm run dev
 Or with Yarn:
 
 ```bash
-$ yarn create vite-app <project-name>
+$ yarn create @vitejs/app <project-name>
 $ cd <project-name>
 $ yarn
 $ yarn dev
@@ -93,7 +93,7 @@ $ yarn dev
 
 ## Explanation of Different Builds
 
-In the [`dist/` directory of the npm package](https://cdn.jsdelivr.net/npm/vue@3.0.0-rc.1/dist/) you will find many different builds of Vue.js. Here is an overview of which `dist` file should be used depending on the use-case.
+In the [`dist/` directory of the npm package](https://cdn.jsdelivr.net/npm/vue@3.0.2/dist/) you will find many different builds of Vue.js. Here is an overview of which `dist` file should be used depending on the use-case.
 
 ### From CDN or without a Bundler
 

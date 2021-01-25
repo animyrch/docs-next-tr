@@ -1,3 +1,7 @@
+---
+sidebarDepth: 1
+---
+
 # Global API
 
 ## createApp
@@ -399,7 +403,7 @@ For example, for runtime-dom, HostNode would be the DOM
 
 Custom renderers can pass in the platform specific types like this:
 
-```js
+```ts
 import { createRenderer } from 'vue'
 const { render, createApp } = createRenderer<Node, Element>({
   patchProp,
@@ -447,3 +451,26 @@ const app = createApp({
 ```
 
 **See also**: [`$nextTick` instance method](instance-methods.html#nexttick)
+
+## mergeProps
+
+Takes multiple objects containing VNode props and merges them into a single object. A newly created object is returned, the objects passed as arguments are not modified.
+
+Any number of objects can be passed, with properties from later arguments taking precedence. Event listeners are handled specially, as are `class` and `style`, with the values of these properties being merged rather than overwritten.
+
+```js
+import { h, mergeProps } from 'vue'
+
+export default {
+  inheritAttrs: false,
+
+  render() {
+    const props = mergeProps({
+      // The class will be merged with any class from $attrs
+      class: 'active'
+    }, this.$attrs)
+
+    return h('div', props)
+  }
+}
+```

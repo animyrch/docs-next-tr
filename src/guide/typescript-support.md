@@ -26,6 +26,31 @@ Note that you have to include `strict: true` (or at least `noImplicitThis: true`
 
 See [TypeScript compiler options docs](https://www.typescriptlang.org/docs/handbook/compiler-options.html) for more details.
 
+## Webpack Configuration
+
+If you are using a custom Webpack configuration `ts-loader` needs to be configured to parse `<script lang="ts">` blocks in `.vue` files:
+
+```js{10}
+// webpack.config.js
+module.exports = {
+  ...
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        loader: 'ts-loader',
+        options: {
+          appendTsSuffixTo: [/\.vue$/],
+        },
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+      }
+      ...
+```
+
 ## Development Tooling
 
 ### Project Creation
@@ -147,11 +172,12 @@ Vue does a runtime validation on props with a `type` defined. To provide these t
 ```ts
 import { defineComponent, PropType } from 'vue'
 
-interface ComplexMessage {
+interface Book {
   title: string
-  okMessage: string
-  cancelMessage: string
+  author: string
+  year: number
 }
+
 const Component = defineComponent({
   props: {
     name: String,
@@ -159,18 +185,76 @@ const Component = defineComponent({
     callback: {
       type: Function as PropType<() => void>
     },
-    message: {
-      type: Object as PropType<ComplexMessage>,
-      required: true,
-      validator(message: ComplexMessage) {
-        return !!message.title
+    book: {
+      type: Object as PropType<Book>,
+      required: true
+    }
+  }
+})
+```
+
+::: warning
+Because of a [design limitation](https://github.com/microsoft/TypeScript/issues/38845) in TypeScript when it comes
+to type inference of function expressions, you have to be careful with `validators` and `default` values for objects and arrays:
+:::
+
+```ts
+import { defineComponent, PropType } from 'vue'
+
+interface Book {
+  title: string
+  year?: number
+}
+
+const Component = defineComponent({
+  props: {
+    bookA: {
+      type: Object as PropType<Book>,
+      // Make sure to use arrow functions
+      default: () => ({
+        title: 'Arrow Function Expression'
+      }),
+      validator: (book: Book) => !!book.title
+    },
+    bookB: {
+      type: Object as PropType<Book>,
+      // Or provide an explicit this parameter
+      default(this: void) {
+        return {
+          title: 'Function Expression'
+        }
+      },
+      validator(this: void, book: Book) {
+        return !!book.title
       }
     }
   }
 })
 ```
 
-If you find validator not getting type inference or member completion isn’t working, annotating the argument with the expected type may help address these problems.
+### Annotating emits
+
+We can annotate a payload for the emitted event. Also, all non-declared emitted events will throw a type error when called:
+
+```ts
+const Component = defineComponent({
+  emits: {
+    addBook(payload: { bookName: string }) {
+      // perform runtime validation
+      return payload.bookName.length > 0
+    }
+  },
+  methods: {
+    onSubmit() {
+      this.$emit('addBook', {
+        bookName: 123 // Type error!
+      })
+
+      this.$emit('non-declared-event') // Type error!
+    }
+  }
+})
+```
 
 ## Using with Composition API
 
@@ -194,7 +278,7 @@ const Component = defineComponent({
 })
 ```
 
-### Typing `ref`s
+### Typing `refs`
 
 Refs infer the type from the initial value:
 

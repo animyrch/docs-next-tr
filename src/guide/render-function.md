@@ -21,7 +21,9 @@ Anchored headings are used very frequently, we should create a component:
 The component must generate a heading based on the `level` prop, and we quickly arrive at this:
 
 ```js
-const app = Vue.createApp({})
+const { createApp } = Vue
+
+const app = createApp({})
 
 app.component('anchored-heading', {
   template: `
@@ -58,12 +60,12 @@ This template doesn't feel great. It's not only verbose, but we're duplicating `
 While templates work great for most components, it's clear that this isn't one of them. So let's try rewriting it with a `render()` function:
 
 ```js
-const app = Vue.createApp({})
+const { createApp, h } = Vue
+
+const app = createApp({})
 
 app.component('anchored-heading', {
   render() {
-    const { h } = Vue
-
     return h(
       'h' + this.level, // tag name
       {}, // props/attributes
@@ -111,7 +113,7 @@ Or in a render function:
 
 ```js
 render() {
-  return Vue.h('h1', {}, this.blogTitle)
+  return h('h1', {}, this.blogTitle)
 }
 ```
 
@@ -122,7 +124,7 @@ And in both cases, Vue automatically keeps the page updated, even when `blogTitl
 Vue keeps the page updated by building a **virtual DOM** to keep track of the changes it needs to make to the real DOM. Taking a closer look at this line:
 
 ```js
-return Vue.h('h1', {}, this.blogTitle)
+return h('h1', {}, this.blogTitle)
 ```
 
 What is the `h()` function returning? It's not _exactly_ a real DOM element. It returns a plain object which contains information describing to Vue what kind of node it should render on the page, including descriptions of any child nodes. We call this node description a "virtual node", usually abbreviated to **VNode**. "Virtual DOM" is what we call the entire tree of VNodes, built by a tree of Vue components.
@@ -164,12 +166,16 @@ h(
 )
 ```
 
+If there are no props then the children can usually be passed as the second argument. In cases where that would be ambiguous, `null` can be passed as the second argument to keep the children as the third argument.
+
 ## Complete Example
 
 With this knowledge, we can now finish the component we started:
 
 ```js
-const app = Vue.createApp({})
+const { createApp, h } = Vue
+
+const app = createApp({})
 
 /** Recursively get text from children nodes */
 function getChildrenTextContent(children) {
@@ -192,8 +198,8 @@ app.component('anchored-heading', {
       .replace(/\W+/g, '-') // replace non-word characters with dash
       .replace(/(^-|-$)/g, '') // remove leading and trailing dashes
 
-    return Vue.h('h' + this.level, [
-      Vue.h(
+    return h('h' + this.level, [
+      h(
         'a',
         {
           name: headingId,
@@ -220,8 +226,8 @@ All VNodes in the component tree must be unique. That means the following render
 
 ```js
 render() {
-  const myParagraphVNode = Vue.h('p', 'hi')
-  return Vue.h('div', [
+  const myParagraphVNode = h('p', 'hi')
+  return h('div', [
     // Yikes - duplicate VNodes!
     myParagraphVNode, myParagraphVNode
   ])
@@ -232,11 +238,56 @@ If you really want to duplicate the same element/component many times, you can d
 
 ```js
 render() {
-  return Vue.h('div',
-    Array.apply(null, { length: 20 }).map(() => {
-      return Vue.h('p', 'hi')
+  return h('div',
+    Array.from({ length: 20 }).map(() => {
+      return h('p', 'hi')
     })
   )
+}
+```
+
+## Creating Component VNodes
+
+To create a VNode for a component, the first argument passed to `h` should be the component itself:
+
+```js
+render() {
+  return h(ButtonCounter)
+}
+```
+
+If we need to resolve a component by name then we can call `resolveComponent`:
+
+```js
+const { h, resolveComponent } = Vue
+
+// ...
+
+render() {
+  const ButtonCounter = resolveComponent('ButtonCounter')
+  return h(ButtonCounter)
+}
+```
+
+`resolveComponent` is the same function that templates use internally to resolve components by name.
+
+A `render` function will normally only need to use `resolveComponent` for components that are [registered globally](/guide/component-registration.html#global-registration). [Local component registration](/guide/component-registration.html#local-registration) can usually be skipped altogether. Consider the following example:
+
+```js
+// We can simplify this
+components: {
+  ButtonCounter
+},
+render() {
+  return h(resolveComponent('ButtonCounter'))
+}
+```
+
+Rather than registering a component by name and then looking it up we can use it directly instead:
+
+```js
+render() {
+  return h(ButtonCounter)
 }
 ```
 
@@ -259,14 +310,16 @@ This could be rewritten with JavaScript's `if`/`else` and `map()` in a render fu
 props: ['items'],
 render() {
   if (this.items.length) {
-    return Vue.h('ul', this.items.map((item) => {
-      return Vue.h('li', item.name)
+    return h('ul', this.items.map((item) => {
+      return h('li', item.name)
     }))
   } else {
-    return Vue.h('p', 'No items found.')
+    return h('p', 'No items found.')
   }
 }
 ```
+
+In a template it can be useful to use a `<template>` tag to hold a `v-if` or `v-for` directive. When migrating to a `render` function, the `<template>` tag is no longer required and can be discarded.
 
 ### `v-model`
 
@@ -274,8 +327,9 @@ The `v-model` directive is expanded to `modelValue` and `onUpdate:modelValue` pr
 
 ```js
 props: ['modelValue'],
+emits: ['update:modelValue'],
 render() {
-  return Vue.h(SomeComponent, {
+  return h(SomeComponent, {
     modelValue: this.modelValue,
     'onUpdate:modelValue': value => this.$emit('update:modelValue', value)
   })
@@ -288,7 +342,7 @@ We have to provide a proper prop name for the event handler, e.g., to handle `cl
 
 ```js
 render() {
-  return Vue.h('div', {
+  return h('div', {
     onClick: $event => console.log('clicked', $event.target)
   })
 }
@@ -296,43 +350,43 @@ render() {
 
 #### Event Modifiers
 
-For the `.passive`, `.capture`, and `.once` event modifiers, they can be concatenated after event name using camel case.
+For the `.passive`, `.capture`, and `.once` event modifiers, they can be concatenated after the event name using camel case.
 
 For example:
 
 ```javascript
 render() {
-  return Vue.h('input', {
+  return h('input', {
     onClickCapture: this.doThisInCapturingMode,
     onKeyupOnce: this.doThisOnce,
-    onMouseoverOnceCapture: this.doThisOnceInCapturingMode,
+    onMouseoverOnceCapture: this.doThisOnceInCapturingMode
   })
 }
 ```
 
 For all other event and key modifiers, no special API is necessary, because we can use event methods in the handler:
 
-| Modifier(s)                                           | Equivalent in Handler                                                                                                |
-| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `.stop`                                               | `event.stopPropagation()`                                                                                            |
-| `.prevent`                                            | `event.preventDefault()`                                                                                             |
-| `.self`                                               | `if (event.target !== event.currentTarget) return`                                                                   |
-| Keys:<br>`.enter`, `.13`                              | `if (event.keyCode !== 13) return` (change `13` to [another key code](http://keycode.info/) for other key modifiers) |
-| Modifiers Keys:<br>`.ctrl`, `.alt`, `.shift`, `.meta` | `if (!event.ctrlKey) return` (change `ctrlKey` to `altKey`, `shiftKey`, or `metaKey`, respectively)                  |
+| Modifier(s)                                          | Equivalent in Handler                                                                                      |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `.stop`                                              | `event.stopPropagation()`                                                                                  |
+| `.prevent`                                           | `event.preventDefault()`                                                                                   |
+| `.self`                                              | `if (event.target !== event.currentTarget) return`                                                         |
+| Keys:<br>e.g. `.enter`                               | `if (event.key !== 'Enter') return`<br><br>Change `'Enter'` to the appropriate [key](http://keycode.info/) |
+| Modifier Keys:<br>`.ctrl`, `.alt`, `.shift`, `.meta` | `if (!event.ctrlKey) return`<br><br>Likewise for `altKey`, `shiftKey`, and `metaKey`                       |
 
 Here's an example with all of these modifiers used together:
 
 ```js
 render() {
-  return Vue.h('input', {
+  return h('input', {
     onKeyUp: event => {
       // Abort if the element emitting the event is not
       // the element the event is bound to
       if (event.target !== event.currentTarget) return
       // Abort if the key that went up is not the enter
-      // key (13) and the shift key was not held down
-      // at the same time
-      if (!event.shiftKey || event.keyCode !== 13) return
+      // key and the shift key was not held down at the
+      // same time
+      if (!event.shiftKey || event.key !== 'Enter') return
       // Stop event propagation
       event.stopPropagation()
       // Prevent the default keyup handler for this element
@@ -345,12 +399,12 @@ render() {
 
 ### Slots
 
-You can access slot contents as Arrays of VNodes from [`this.$slots`](../api/instance-properties.html#slots):
+We can access slot contents as arrays of VNodes from [`this.$slots`](../api/instance-properties.html#slots):
 
 ```js
 render() {
   // `<div><slot></slot></div>`
-  return Vue.h('div', {}, this.$slots.default())
+  return h('div', this.$slots.default())
 }
 ```
 
@@ -358,38 +412,137 @@ render() {
 props: ['message'],
 render() {
   // `<div><slot :text="message"></slot></div>`
-  return Vue.h('div', {}, this.$slots.default({
+  return h('div', this.$slots.default({
     text: this.message
   }))
 }
 ```
 
-To pass slots to a child component using render functions:
+For component VNodes, we need to pass the children to `h` as an object rather than an array. Each property is used to populate the slot of the same name:
 
 ```js
 render() {
   // `<div><child v-slot="props"><span>{{ props.text }}</span></child></div>`
-  return Vue.h('div', [
-    Vue.h('child', {}, {
+  return h('div', [
+    h(
+      resolveComponent('child'),
+      null,
       // pass `slots` as the children object
       // in the form of { name: props => VNode | Array<VNode> }
-      default: (props) => Vue.h('span', props.text)
-    })
+      {
+        default: (props) => h('span', props.text)
+      }
+    )
   ])
 }
 ```
+
+The slots are passed as functions, allowing the child component to control the creation of each slot's contents. Any reactive data should be accessed within the slot function to ensure that it's registered as a dependency of the child component and not the parent. Conversely, calls to `resolveComponent` should be made outside the slot function, otherwise they'll resolve relative to the wrong component:
+
+```js
+// `<MyButton><MyIcon :name="icon" />{{ text }}</MyButton>`
+render() {
+  // Calls to resolveComponent should be outside the slot function
+  const Button = resolveComponent('MyButton')
+  const Icon = resolveComponent('MyIcon')
+
+  return h(
+    Button,
+    null,
+    {
+      // Use an arrow function to preserve the `this` value
+      default: (props) => {
+        // Reactive properties should be read inside the slot function
+        // so that they become dependencies of the child's rendering
+        return [
+          h(Icon, { name: this.icon }),
+          this.text
+        ]
+      }
+    }
+  )
+}
+```
+
+If a component receives slots from its parent, they can be passed on directly to a child component:
+
+```js
+render() {
+  return h(Panel, null, this.$slots)
+}
+```
+
+They can also be passed individually or wrapped as appropriate:
+
+```js
+render() {
+  return h(
+    Panel,
+    null,
+    {
+      // If we want to pass on a slot function we can
+      header: this.$slots.header,
+
+      // If we need to manipulate the slot in some way
+      // then we need to wrap it in a new function
+      default: (props) => {
+        const children = this.$slots.default ? this.$slots.default(props) : []
+
+        return children.concat(h('div', 'Extra child'))
+      }
+    }
+  )
+}
+```
+
+### `<component>` and `is`
+
+Behind the scenes, templates use `resolveDynamicComponent` to implement the `is` attribute. We can use the same function if we need all the flexibility provided by `is` in our `render` function:
+
+```js
+const { h, resolveDynamicComponent } = Vue
+
+// ...
+
+// `<component :is="name"></component>`
+render() {
+  const Component = resolveDynamicComponent(this.name)
+  return h(Component)
+}
+```
+
+Just like `is`, `resolveDynamicComponent` supports passing a component name, an HTML element name, or a component options object.
+
+However, that level of flexibility is usually not required. It's often possible to replace `resolveDynamicComponent` with a more direct alternative.
+
+For example, if we only need to support component names then `resolveComponent` can be used instead.
+
+If the VNode is always an HTML element then we can pass its name directly to `h`:
+
+```js
+// `<component :is="bold ? 'strong' : 'em'"></component>`
+render() {
+  return h(this.bold ? 'strong' : 'em')
+}
+```
+
+Similarly, if the value passed to `is` is a component options object then there's no need to resolve anything, it can be passed directly as the first argument of `h`.
+
+Much like a `<template>` tag, a `<component>` tag is only required in templates as a syntactical placeholder and should be discarded when migrating to a `render` function.
 
 ## JSX
 
 If we're writing a lot of `render` functions, it might feel painful to write something like this:
 
 ```js
-Vue.h(
-  Vue.resolveComponent('anchored-heading'),
+h(
+  resolveComponent('anchored-heading'),
   {
     level: 1
   },
-  [Vue.h('span', 'Hello'), ' world!']
+  {
+    default: () => [h('span', 'Hello'), ' world!']
+  }
 )
 ```
 
