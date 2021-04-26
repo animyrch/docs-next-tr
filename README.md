@@ -1,26 +1,27 @@
+
 # v3.vuejs.org
 
-This site is built with [VuePress](https://vuepress.vuejs.org/). Site content is written in Markdown format located in `src`.
+Bu site [VuePress](https://vuepress.vuejs.org/) ile oluşturulmuştur. Sitenin içeriği  Markdown formatı ile yazılmış olup `src` dizini içinde bulunmaktadır.
 
-## Writing
+##  Yazım
 
-See the [Vue Docs Writing Guide](https://v3.vuejs.org/guide/writing-guide.html) for our rules and recommendations on writing and maintaining documentation.
+Döküman yazmak konusunda kurallarımız ve önerilerimiz için [Vue Dokümantasyon Yazım Rehberi (EN)](https://v3.vuejs.org/guide/writing-guide.html).
 
-## Developing
+## Geliştirme
 
-1. Clone repository
+1. Repomuzu klonluyoruz
 
 ```bash
-git clone git@github.com:vuejs/docs-next.git
+git clone https://github.com/tansionline/docs-next-tr.git
 ```
 
-2. Install dependencies
+2. Paketlerimizi indiriyoruz
 
 ```bash
 yarn # or npm install
 ```
 
-3. Start local development environment
+3. Serverı lokalimizde başlatıyoruz
 
 ```bash
 yarn serve # or npm run serve
