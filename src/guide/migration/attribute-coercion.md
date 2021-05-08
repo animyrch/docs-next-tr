@@ -1,38 +1,38 @@
 ---
 badges:
-  - breaking
+  - kırıcı
 ---
 
-# Attribute Coercion Behavior <MigrationBadges :badges="$frontmatter.badges" />
+# Nitelik Zorlama Davranışı <MigrationBadges :badges="$frontmatter.badges" />
 
-::: info Info
-This is a low-level internal API change and does not affect most developers.
+::: info Bilgi
+Bu API içerisinde gerçekleştirilen düşük seviyeli bir değişikliktir ve programcıların büyük bir çoğunluğunu etkilemez.
 :::
 
-## Overview
+## Genel Bakış
 
-Here is a high level summary of the changes:
+Değişikliklerin kısa bir özetini aşağıda bulabilirsiniz:
 
-- Drop the internal concept of enumerated attributes and treat those attributes the same as normal non-boolean attributes
-- **BREAKING**: No longer removes attribute if value is boolean `false`. Instead, it's set as attr="false" instead. To remove the attribute, use `null` or `undefined`.
+- Zorlanan niteliklere dayalı dahili konsept geride bırakılıyor ve bu nitelikler boolean olmayan nitelikler ile aynı şekilde dikkate alınıyor
+- **KIRICI**: Değerin boolean `false` olduğu durumlarda artık nitelik ortadan kaldırılmıyor. Onun yerine attr="false" olarak tayin ediliyor. Niteliği ortadan kaldırmak için `null` veya `undefined` değerlerini kullanın.
 
-For more information, read on!
+Daha detaylı bilgiler için okumaya devam edin!
 
-## 2.x Syntax
+## 2.x Sentaksı
 
-In 2.x, we had the following strategies for coercing `v-bind` values:
+2.x versiyonlarında `v-bind` değerlerini zorlamak için aşağıdaki stratejileri uyguluyorduk:
 
-- For some attribute/element pairs, Vue is always using the corresponding IDL attribute (property): [like `value` of `<input>`, `<select>`, `<progress>`, etc](https://github.com/vuejs/vue/blob/bad3c326a3f8b8e0d3bcf07917dc0adf97c32351/src/platforms/web/util/attrs.js#L11-L18).
+- Bazı nitelik/element çiftleri için Vue her daim karşılık gelen IDL niteliğini (özelliği) kullanıyor: [örneğin `<input>`, `<select>`, `<progress>`, vb elemenlerin `value` niteliği](https://github.com/vuejs/vue/blob/bad3c326a3f8b8e0d3bcf07917dc0adf97c32351/src/platforms/web/util/attrs.js#L11-L18).
 
-- For "[boolean attributes](https://github.com/vuejs/vue/blob/bad3c326a3f8b8e0d3bcf07917dc0adf97c32351/src/platforms/web/util/attrs.js#L33-L40)" and [xlinks](https://github.com/vuejs/vue/blob/bad3c326a3f8b8e0d3bcf07917dc0adf97c32351/src/platforms/web/util/attrs.js#L44-L46), Vue removes them if they are "falsy" ([`undefined`, `null` or `false`](https://github.com/vuejs/vue/blob/bad3c326a3f8b8e0d3bcf07917dc0adf97c32351/src/platforms/web/util/attrs.js#L52-L54)) and adds them otherwise (see [here](https://github.com/vuejs/vue/blob/bad3c326a3f8b8e0d3bcf07917dc0adf97c32351/src/platforms/web/runtime/modules/attrs.js#L66-L77) and [here](https://github.com/vuejs/vue/blob/bad3c326a3f8b8e0d3bcf07917dc0adf97c32351/src/platforms/web/runtime/modules/attrs.js#L81-L85)).
+- "[Boolean nitelikler](https://github.com/vuejs/vue/blob/bad3c326a3f8b8e0d3bcf07917dc0adf97c32351/src/platforms/web/util/attrs.js#L33-L40)" ve [xlinkler](https://github.com/vuejs/vue/blob/bad3c326a3f8b8e0d3bcf07917dc0adf97c32351/src/platforms/web/util/attrs.js#L44-L46) için, Vue "yanlış" ([`undefined`, `null` or `false`](https://github.com/vuejs/vue/blob/bad3c326a3f8b8e0d3bcf07917dc0adf97c32351/src/platforms/web/util/attrs.js#L52-L54)) olarak değerlendirilen nitelikleri ortadan kaldırırken diğer türden verileri olduğu gibi ekliyor ([buraya](https://github.com/vuejs/vue/blob/bad3c326a3f8b8e0d3bcf07917dc0adf97c32351/src/platforms/web/runtime/modules/attrs.js#L66-L77) ve [buraya](https://github.com/vuejs/vue/blob/bad3c326a3f8b8e0d3bcf07917dc0adf97c32351/src/platforms/web/runtime/modules/attrs.js#L81-L85) bakın).
 
-- For "[enumerated attributes](https://github.com/vuejs/vue/blob/bad3c326a3f8b8e0d3bcf07917dc0adf97c32351/src/platforms/web/util/attrs.js#L20)" (currently `contenteditable`, `draggable` and `spellcheck`), Vue tries to [coerce](https://github.com/vuejs/vue/blob/bad3c326a3f8b8e0d3bcf07917dc0adf97c32351/src/platforms/web/util/attrs.js#L24-L31) them to string (with special treatment for `contenteditable` for now, to fix [vuejs/vue#9397](https://github.com/vuejs/vue/issues/9397)).
+- "[Zorlanan nitelikler](https://github.com/vuejs/vue/blob/bad3c326a3f8b8e0d3bcf07917dc0adf97c32351/src/platforms/web/util/attrs.js#L20)" için (şimdilik `contenteditable`, `draggable` ve `spellcheck`), Vue bu değerleri dizgiye [dönüştürür](https://github.com/vuejs/vue/blob/bad3c326a3f8b8e0d3bcf07917dc0adf97c32351/src/platforms/web/util/attrs.js#L24-L31) (`contenteditable` şimdilik istisna oluşturmaktadır. Düzeltme takibi için buraya bakabilirsiniz [vuejs/vue#9397](https://github.com/vuejs/vue/issues/9397)).
 
-- For other attributes, we remove "falsy" values (`undefined`, `null`, or `false`) and set other values as-is (see [here](https://github.com/vuejs/vue/blob/bad3c326a3f8b8e0d3bcf07917dc0adf97c32351/src/platforms/web/runtime/modules/attrs.js#L92-L113)).
+- Diğer nitelikler için "yanlış" olarak değerlendirilen değerleri (`undefined`, `null`, veya `false`) ortadan kaldırır ve diğer değerleri olduğu gibi korur ([buraya](https://github.com/vuejs/vue/blob/bad3c326a3f8b8e0d3bcf07917dc0adf97c32351/src/platforms/web/runtime/modules/attrs.js#L92-L113)) bakın.
 
-The following table describes how Vue coerce "enumerated attributes" differently with normal non-boolean attributes:
+Aşağıdaki tablo Vue'nin "zorlanan nitelikleri" istisnai olarak normal boolean olmayan değerlere nasıl dönüştürdüğünü açıklar:
 
-| Binding expression  | `foo` <sup>normal</sup> | `draggable` <sup>enumerated</sup> |
+| Bağlanan ifade  | `foo` <sup>normal</sup> | `draggable` <sup>zorlanmış</sup> |
 | ------------------- | ----------------------- | --------------------------------- |
 | `:attr="null"`      | /                       | `draggable="false"`               |
 | `:attr="undefined"` | /                       | /                                 |
@@ -43,22 +43,22 @@ The following table describes how Vue coerce "enumerated attributes" differently
 | `attr="foo"`        | `foo="foo"`             | `draggable="true"`                |
 | `attr`              | `foo=""`                | `draggable="true"`                |
 
-We can see from the table above, current implementation coerces `true` to `'true'` but removes the attribute if it's `false`. This also led to inconsistency and required users to manually coerce boolean values to string in very common use cases like `aria-*` attributes like `aria-selected`, `aria-hidden`, etc.
+Yukarıdaki tablodan görebileceğimiz gibi, bu sistem `true`yu `'true'`ya zorlar fakat değer `false` ise niteliği kaldırır. Bu aynı zamanda tutarsızlığa yol açıyor ve kullanıcıların `aria-selected`, `aria-hidden` vb. `aria-*` nitelikleri gibi çok yaygın kullanım durumlarında boolean değerlerini manuel olarak dizeye zorlamalarını gerektiriyor.
 
-## 3.x Syntax
+## 3.x Sentaksı
 
-We intend to drop this internal concept of "enumerated attributes" and treat them as normal non-boolean HTML attributes.
+Bu dahili "zorlanan nitelik" konseptini bırakmayı ve bunları normal, boolean olmayan HTML nitelikleri olarak ele almayı amaçlıyoruz.
 
-- This solves the inconsistency between normal non-boolean attributes and “enumerated attributes”
-- It also makes it possible to use values other than `'true'` and `'false'`, or even keywords yet to come, for attributes like `contenteditable`
+- Bu, normal boolean olmayan nitelikler ve “zorlanan nitelikler” arasındaki tutarsızlığı çözüyor
+- Bu aynı zamanda `'true'` ve `'false'` dışındaki değerleri ve hatta gelecekte kullanılmaya başlanabilecek anahtar kelimeleri `contenteditable` gibi nitelikler için kullanmayı mümkün kılıyor
 
-For non-boolean attributes, Vue will stop removing them if they are `false` and coerce them to `'false'` instead.
+Boolean olmayan nitelikler için Vue, `false` değerlerini kaldırmayı durduracak ve bunun yerine onları `'false'` olmaya zorlayacak.
 
-- This solves the inconsistency between `true` and `false` and makes outputting `aria-*` attributes easier
+- Bu, `true` ve `false` arasındaki tutarsızlığı çözüyor ve `aria-*` niteliklerinin daha kolay kullanılmasını sağlıyor
 
-The following table describes the new behavior:
+Aşağıdaki tablo bu yeni davranışı tarif eder:
 
-| Binding expression  | `foo` <sup>normal</sup>    | `draggable` <sup>enumerated</sup> |
+| Bağlanan ifade  | `foo` <sup>normal</sup>    | `draggable` <sup>zorlanmış</sup> |
 | ------------------- | -------------------------- | --------------------------------- |
 | `:attr="null"`      | /                          | / <sup>†</sup>                    |
 | `:attr="undefined"` | /                          | /                                 |
@@ -69,47 +69,47 @@ The following table describes the new behavior:
 | `attr="foo"`        | `foo="foo"`                | `draggable="foo"` <sup>†</sup>    |
 | `attr`              | `foo=""`                   | `draggable=""` <sup>†</sup>       |
 
-<small>†: changed</small>
+<small>†: değişti</small>
 
-Coercion for boolean attributes is left untouched.
+Boolean niteliklerin zorlanması olduğu gibi bırakıldı.
 
-## Migration Strategy
+## Yeni Versiyona Geçiş Stratejisi
 
-### Enumerated attributes
+### Zorlanan nitelikler
 
-The absence of an enumerated attribute and `attr="false"` may produce different IDL attribute values (which will reflect the actual state), described as follows:
+Zorlanan niteliklerin ve `attr="false"`nin kaldırılması aşağıda tarif edilen farklı (ve gerçek durumu yansıtan) IDL nitelik değerlerine yol açabilir:
 
-| Absent enumerated attr | IDL attr & value                     |
+| Kaldırılan zorlanmış nitelik | IDL nitelik ve değer                     |
 | ---------------------- | ------------------------------------ |
 | `contenteditable`      | `contentEditable` &rarr; `'inherit'` |
 | `draggable`            | `draggable` &rarr; `false`           |
 | `spellcheck`           | `spellcheck` &rarr; `true`           |
 
-To keep the old behavior work, and as we will be coercing `false` to `'false'`, in 3.x Vue developers need to make `v-bind` expression resolve to `false` or `'false'` for `contenteditable` and `spellcheck`.
+Eski davranışı korumak için ve `false`nin `'false'`ye zorlanmaya başlanması nedeniyle, Vue'nin 3.x versiyonlarında programcıların `contenteditable` ve `spellcheck` için `v-bind` ifadesini `false` or `'false'` olacak şekilde tayin etmeleri gerekiyor.
 
-In 2.x, invalid values were coerced to `'true'` for enumerated attributes. This was usually unintended and unlikely to be relied upon on a large scale. In 3.x `true` or `'true'` should be explicitly specified.
+2.x versiyonlarında geçersiz değerler zorlanan nitelikler için `'true'`ye dönüştürülüyordu. Bu genellikle kasıtsızdı ve büyük ölçekte güvenilmesi pek olası değildi. 3.x versiyonlarında `true` veya `'true'`nin açıkça belirtilmesi gerekiyor.
 
-### Coercing `false` to `'false'` instead of removing the attribute
+### Niteliğin kaldırılması yerine `false` veya `'false'`ye dönüştürülmesi
 
-In 3.x, `null` or `undefined` should be used to explicitly remove an attribute.
+3.x versiyonlarında niteliği ortadan kaldırmak için `null` veya `undefined` değerleri açık bir şekilde kullanılmalıdır.
 
-### Comparison between 2.x & 3.x behavior
+### 2.x ve 3.x versiyonları arasındaki fark
 
 <table>
   <thead>
     <tr>
-      <th>Attribute</th>
-      <th><code>v-bind</code> value <sup>2.x</sup></th>
-      <th><code>v-bind</code> value <sup>3.x</sup></th>
-      <th>HTML output</th>
+      <th>Nitelik</th>
+      <th><code>v-bind</code> değeri <sup>2.x</sup></th>
+      <th><code>v-bind</code> değeri <sup>3.x</sup></th>
+      <th>HTML sonucu</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td rowspan="3">2.x “Enumerated attrs”<br><small>i.e. <code>contenteditable</code>, <code>draggable</code> and <code>spellcheck</code>.</small></td>
+      <td rowspan="3">2.x “Zorlanan nitelikler”<br><small>örn. <code>contenteditable</code>, <code>draggable</code> ve <code>spellcheck</code>.</small></td>
       <td><code>undefined</code>, <code>false</code></td>
       <td><code>undefined</code>, <code>null</code></td>
-      <td><i>removed</i></td>
+      <td><i>çıkarılıyor</i></td>
     </tr>
     <tr>
       <td>
@@ -125,10 +125,10 @@ In 3.x, `null` or `undefined` should be used to explicitly remove an attribute.
       <td><code>"false"</code></td>
     </tr>
     <tr>
-      <td rowspan="2">Other non-boolean attrs<br><small>eg. <code>aria-checked</code>, <code>tabindex</code>, <code>alt</code>, etc.</small></td>
+      <td rowspan="2">Boolean olmayan diğer nitelikler<br><small>örn. <code>aria-checked</code>, <code>tabindex</code>, <code>alt</code>, vs.</small></td>
       <td><code>undefined</code>, <code>null</code>, <code>false</code></td>
       <td><code>undefined</code>, <code>null</code></td>
-      <td><i>removed</i></td>
+      <td><i>çıkarılıyor</i></td>
     </tr>
     <tr>
       <td><code>'false'</code></td>
