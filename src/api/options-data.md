@@ -21,7 +21,7 @@
   const data = { a: 1 }
 
   // The object is added to a component instance
-  const vm = Vue.createApp({
+  const vm = createApp({
     data() {
       return data
     }
@@ -59,7 +59,7 @@
 - **Example:**
 
   ```js
-  const app = Vue.createApp({})
+  const app = createApp({})
 
   // simple syntax
   app.component('props-demo-simple', {
@@ -107,7 +107,7 @@
 - **Example:**
 
   ```js
-  const app = Vue.createApp({
+  const app = createApp({
     data() {
       return { a: 1 }
     },
@@ -152,7 +152,7 @@
 - **Example:**
 
   ```js
-  const app = Vue.createApp({
+  const app = createApp({
     data() {
       return { a: 1 }
     },
@@ -177,12 +177,12 @@
 
 - **Details:**
 
-  An object where keys are expressions to watch and values are the corresponding callbacks. The value can also be a string of a method name, or an Object that contains additional options. The component instance will call `$watch()` for each entry in the object at instantiation. See [$watch](instance-methods.html#watch) for more information about the `deep`, `immediate` and `flush` options.
+  An object where keys are reactive properties to watch — examples include [data](/api/options-data.html#data-2) or [computed](/api/options-data.html#computed) properties — and values are the corresponding callbacks. The value can also be a string of a method name, or an Object that contains additional options. The component instance will call `$watch()` for each entry in the object at instantiation. See [$watch](instance-methods.html#watch) for more information about the `deep`, `immediate` and `flush` options.
 
 - **Example:**
 
   ```js
-  const app = Vue.createApp({
+  const app = createApp({
     data() {
       return {
         a: 1,
@@ -190,11 +190,12 @@
         c: {
           d: 4
         },
-        e: 'test',
-        f: 5
+        e: 5,
+        f: 6
       }
     },
     watch: {
+      // watching top-level property
       a(val, oldVal) {
         console.log(`new: ${val}, old: ${oldVal}`)
       },
@@ -206,6 +207,10 @@
           console.log('c changed')
         },
         deep: true
+      },
+      // watching a single nested property:
+      'c.d': function (val, oldVal) {
+        // do something
       },
       // the callback will be called immediately after the start of the observation
       e: {
@@ -262,7 +267,7 @@
 - **Usage:**
 
   ```js
-  const app = Vue.createApp({})
+  const app = createApp({})
 
   // Array syntax
   app.component('todo-item', {

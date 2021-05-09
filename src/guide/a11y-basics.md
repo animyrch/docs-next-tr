@@ -24,6 +24,7 @@ Odaklanmadıkça bağlantıyı gizlemek için aşağıdaki CSS stilini ekleyebil
 
 ```css
 .linkiGec {
+
   white-space: nowrap;
 
   margin: 1em auto;
@@ -64,7 +65,7 @@ export default {
 </script>
 ```
 
-<common-codepen-snippet  title="Skip to Main"  slug="VwepxJa"  :height="350"  tab="js,result"  :team="false"  user="mlama007"  name="Maria"  theme="light"  :preview="false"  :editable="false"  />
+<common-codepen-snippet title="Skip to Main" slug="GRrvQJa" :height="350" tab="js,result" theme="light" :preview="false" :editable="false" />
 
 [Ana içeriğe giden bağlantıyı atlamayla ilgili dökümanı okuyun](https://www.w3.org/WAI/WCAG21/Techniques/general/G1.html)
 

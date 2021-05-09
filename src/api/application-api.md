@@ -191,7 +191,7 @@ Apart from `el`, you should treat these arguments as read-only and never modify 
 
 - **Usage:**
 
-  Mounts a root component of the application instance on the provided DOM element.
+  The `innerHTML` of the provided DOM element will be replaced with the rendered template of the application root component.
 
 - **Example:**
 
@@ -316,3 +316,27 @@ setTimeout(() => app.unmount(), 5000)
   ```
 
 - **See also:** [Plugins](../guide/plugins.html)
+
+## version
+
+- **Usage:**
+
+  Provides the installed version of Vue as a string. This is especially useful for community [plugins](/guide/plugins.html), where you might use different strategies for different versions.
+
+- **Example:**
+
+  ```js
+  export default {
+    install(app) {
+      const version = Number(app.version.split('.')[0])
+      
+      if (version < 3) {
+        console.warn('This plugin requires Vue 3')
+      }
+      
+      // ...
+    }
+  }
+  ```
+  
+- **See also**: [Global API - version](/api/global-api.html#version)
