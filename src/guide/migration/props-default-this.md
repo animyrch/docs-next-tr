@@ -23,7 +23,7 @@ export default {
     theme: {
       default (props) {
         // `props` komponente aktarılan ham değerlerdir,
-        // herhangi bir tip / varsayılan zorlamada önce
+        // herhangi bir tip / varsayılan zorlamadan önce
         // enjekte edilen niteliklere erişim sağlamak üzere `inject` de kullanılabilir
         return inject('theme', 'default-theme')
       }
