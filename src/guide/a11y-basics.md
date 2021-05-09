@@ -126,7 +126,7 @@ Yer işaretleri, bir uygulama içindeki bölümlere programlı erişim sağlar. 
 | section         | rol="region"        | Alakalı ve kullanıcıların büyük olasılıkla gitmek isteyeceği içerik. Bu öğe için etiket sağlanmalıdır |
 
 :::tip İpucu:
-[HTML5 semantik öğelerini desteklemeyen eski tarayıcılarla uyumluluğunu](https://caniuse.com/#feat=html5semantic) en üst düzeye çıkarmak için gereksiz yer işareti rol özniteliklerine sahip HTML öğelerinin kullanılması önerilir.
+[HTML5 semantik öğelerini desteklemeyen eski tarayıcılarla uyumluluğunu](https://caniuse.com/#feat=html5semantic) en üst düzeye çıkarmak için etkisiz yer işareti rol özniteliklerine sahip HTML öğelerinin kullanılması önerilir.
 
 :::
 
