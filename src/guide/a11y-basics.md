@@ -2,7 +2,7 @@
 
 Web accessibility (also known as a11y) refers to the practice of creating websites that can be used by anyone — be that a person with a disability, a slow connection, outdated or broken hardware or simply someone in an unfavorable environment. For example, adding subtitles to a video would help both your deaf and hard-of-hearing users and your users who are in a loud environment and can't hear their phone. Similarly, making sure your text isn't too low contrast will help both your low-vision users and your users who are trying to use their phone in bright sunlight.
 
-Ready start but aren’t sure where?
+Ready to start but aren’t sure where?
 
 Checkout the [Planning and managing web accessibility guide](https://www.w3.org/WAI/planning-and-managing/) provided by [World Wide Web Consortium (W3C)](https://www.w3.org/)
 
@@ -12,7 +12,7 @@ You should add a link at the top of each page that goes directly to the main con
 
 Typically this is done on the top of `App.vue` as it will be the first focusable element on all your pages:
 
-``` html
+```html
 <ul class="skip-links">
   <li>
     <a href="#main" ref="skipLink">Skip to main content</a>
@@ -22,7 +22,7 @@ Typically this is done on the top of `App.vue` as it will be the first focusable
 
 To hide the link unless it is focused, you can add the following style:
 
-``` css
+```css
 .skipLink {
   white-space: nowrap;
   margin: 1em auto;
@@ -42,7 +42,7 @@ To hide the link unless it is focused, you can add the following style:
 
 Once a user changes route, bring focus back to the skip link. This can be achieved by calling focus to the `ref` provided below:
 
-``` vue
+```vue
 <script>
 export default {
   watch: {
@@ -54,7 +54,7 @@ export default {
 </script>
 ```
 
-<common-codepen-snippet title="Skip to Main" slug="VwepxJa" :height="350" tab="js,result" :team="false" user="mlama007" name="Maria" theme="light" :preview="false" :editable="false" />
+<common-codepen-snippet title="Skip to Main" slug="GRrvQJa" :height="350" tab="js,result" theme="light" :preview="false" :editable="false" />
 
 [Read documentation on skip link to main content](https://www.w3.org/WAI/WCAG21/Techniques/general/G1.html)
 
