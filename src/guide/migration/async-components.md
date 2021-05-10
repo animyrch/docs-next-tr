@@ -57,10 +57,6 @@ const asyncModalWithOptions = defineAsyncComponent({
 })
 ```
 
-::: tip NOTE
-Vue Router supports a similar mechanism for asynchronously loading route components, known as *lazy loading*. Despite the similarities, this feature is distinct from Vue's support for async components. You should **not** use `defineAsyncComponent` when configuring route components with Vue Router. You can read more about this in the [Lazy Loading Routes](https://next.router.vuejs.org/guide/advanced/lazy-loading.html) section of the Vue Router documentation.
-:::
-
 2.x'e kıyasla farklılık gösteren bir diğer yenilik `component` seçeneğinin adının `loader` olarak değiştirilmesi. Bu değişikliğin sebebi bir bileşen tanımının doğrudan kullanılamayacağını doğru bir şekilde ifade edebilmek.
 
 ```js{4}
