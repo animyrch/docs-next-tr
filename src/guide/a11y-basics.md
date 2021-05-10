@@ -1,112 +1,134 @@
-# Basics
+# Temeller
 
-Web accessibility (also known as a11y) refers to the practice of creating websites that can be used by anyone — be that a person with a disability, a slow connection, outdated or broken hardware or simply someone in an unfavorable environment. For example, adding subtitles to a video would help both your deaf and hard-of-hearing users and your users who are in a loud environment and can't hear their phone. Similarly, making sure your text isn't too low contrast will help both your low-vision users and your users who are trying to use their phone in bright sunlight.
+Web erişilebilirliği (a11y olarak da bilinir), herkes tarafından kullanılabilecek web siteleri oluşturma yöntemini ifade eder ve engelli bir kişi, yavaş bağlantı, eski, bozuk bir cihaz veya sadece elverişsiz bir ortamdaki kullanıcıları kapsar. Örneğin, bir videoya altyazı eklemek, hem işitme engelli hem de işitme güçlüğü çeken kullanıcılarınıza ve gürültülü bir ortamda bulunan ve telefonlarını duyamayan kullanıcılarınıza yardımcı olur. Benzer şekilde, metninizin çok düşük kontrastlı olmadığından emin olmak, hem az gören kullanıcılarınıza hem de telefonlarını parlak güneş ışığında kullanmaya çalışan kullanıcılarınıza yardımcı olacaktır.
 
-Ready to start but aren’t sure where?
+Başlamaya hazırsınız ama nereden başlayacağınızı bilmiyor musunuz?
 
-Checkout the [Planning and managing web accessibility guide](https://www.w3.org/WAI/planning-and-managing/) provided by [World Wide Web Consortium (W3C)](https://www.w3.org/)
+[World Wide Web Consortium (W3C)](https://www.w3.org/) tarafından hazırlanmış olan [web erişebilirlik planlama ve yönetme kılavuzuna](https://www.w3.org/WAI/planning-and-managing/) bakabilirsiniz.
 
-## Skip link
+## Bağlantıyı atla
 
-You should add a link at the top of each page that goes directly to the main content area so users can skip content that is repeated on multiple Web pages.
+Her sayfanın üstüne, doğrudan ana içerik alanına giden bir bağlantı eklemelisiniz, böylece kullanıcılar, Web sayfasında birden çok tekrarlanan içeriği atlayabilir.
 
-Typically this is done on the top of `App.vue` as it will be the first focusable element on all your pages:
+Tipik olarak bu, tüm sayfalarınızda ilk odaklanılabilir öğe olacağı için `App.vue` dosyasının üstünde yapılır:
 
 ```html
-<ul class="skip-links">
+<ul class="linki-gec">
   <li>
-    <a href="#main" ref="skipLink">Skip to main content</a>
+    <a href="#main" ref="linkiGec">Ana içeriği geç</a>
   </li>
 </ul>
 ```
 
-To hide the link unless it is focused, you can add the following style:
+Odaklanmadıkça bağlantıyı gizlemek için aşağıdaki CSS stilini ekleyebilirsiniz:
 
 ```css
-.skipLink {
+.linkiGec {
+
   white-space: nowrap;
+
   margin: 1em auto;
+
   top: 0;
+
   position: fixed;
+
   left: 50%;
+
   margin-left: -72px;
+
   opacity: 0;
 }
-.skipLink:focus {
+
+.linkiGec:focus {
   opacity: 1;
+
   background-color: white;
-  padding: .5em;
+
+  padding: 0.5em;
+
   border: 1px solid black;
 }
 ```
 
-Once a user changes route, bring focus back to the skip link. This can be achieved by calling focus to the `ref` provided below:
+Bir kullanıcı rotayı değiştirdiğinde, odağı atlama bağlantısına geri getirin. Bu, aşağıda verilen "ref" e focus fonksiyonu çağrılarak elde edilebilir:
 
 ```vue
 <script>
 export default {
   watch: {
     $route() {
-      this.$refs.skipLink.focus();
-    }
-  }
-};
+      this.$refs.linkiGec.focus()
+    },
+  },
+}
 </script>
 ```
 
 <common-codepen-snippet title="Skip to Main" slug="GRrvQJa" :height="350" tab="js,result" theme="light" :preview="false" :editable="false" />
 
-[Read documentation on skip link to main content](https://www.w3.org/WAI/WCAG21/Techniques/general/G1.html)
+[Ana içeriğe giden bağlantıyı atlamayla ilgili dökümanı okuyun](https://www.w3.org/WAI/WCAG21/Techniques/general/G1.html)
 
-## Structure Your Content
+## İçeriğinizi Yapılandırın
 
-One of the most important pieces of accessibility is making sure that design can support accessible implementation. Design should consider not only color contrast, font selection, text sizing, and language, but also how the content is structured in the application.
+Erişilebilirliğin en önemli parçalarından biri, tasarımın erişilebilir uygulamayı destekleyebildiğinden emin olmaktır. Tasarım sadece renk kontrastını, yazı tipi seçimini, metin boyutunu ve dili değil, aynı zamanda içeriğin uygulamada nasıl yapılandırıldığını da dikkate almalıdır.
 
-### Headings
+### Başlık
 
-Users can navigate an application through headings. Having descriptive headings for every section of your application makes it easier for users to predict the content of each section. When it comes to headings, there are a couple of recommended accessibility practices:
+Kullanıcılar başlıklar aracılığıyla bir uygulamada gezinebilirler. Uygulamanızın her bölümü için açıklayıcı başlıklara sahip olmak, kullanıcıların her bölümün içeriğini tahmin etmesini kolaylaştırır. Başlıklar söz konusu olduğunda, önerilen birkaç erişilebilirlik kuralı vardır:
 
-- Nest headings in their ranking order: `<h1>` - `<h6>`
-- Don’t skip headings within a section
-- Use actual heading tags instead of styling text to give the visual appearance of headings
+- Başlıkları sıralamaya göre yerleştiriniz: `<h1>` - `<h6>`
 
-[Read more about headings](https://www.w3.org/TR/UNDERSTANDING-WCAG20/navigation-mechanisms-descriptive.html)
+* Bir section içindeki başlıkları atlamayın
+
+- Başlıkların görsel görünümünü vermek için metnin stilini ayarlamak yerine gerçek başlık etiketlerini kullanın
+
+[Daha fazla başlık ile ilgili](https://www.w3.org/TR/UNDERSTANDING-WCAG20/navigation-mechanisms-descriptive.html)
 
 ```html
-<main role="main" aria-labelledby="main-title">
-  <h1 id="main-title">Main title</h1>
-  <section aria-labelledby="section-title">
-    <h2 id="section-title"> Section Title </h2>
-    <h3>Section Subtitle</h3>
-    <!-- Content -->
+<main role="ana" aria-labelledby="ana-baslik">
+  <h1 id="ana-baslik">Ana Başlık</h1>
+
+  <section aria-labelledby="section-baslik">
+    <h2 id="section-baslik">Section Başlığı</h2>
+
+    <h3>Section Alt Başlığı</h3>
+
+    <!-- İçerik -->
   </section>
-  <section aria-labelledby="section-title">
-    <h2 id="section-title"> Section Title </h2>
-    <h3>Section Subtitle</h3>
-    <!-- Content -->
-    <h3>Section Subtitle</h3>
-    <!-- Content -->
+
+  <section aria-labelledby="section-baslik">
+    <h2 id="section-baslik">Section Başlığı</h2>
+
+    <h3>Section Alt Başlığı</h3>
+
+    <!-- İçerik -->
+
+    <h3>Section Alt Başlığı</h3>
+
+    <!-- İçerik -->
   </section>
 </main>
 ```
 
-### Landmarks
+### Yer işaretleri (Landmark)
 
-Landmarks provide programmatic access to sections within an application. Users who rely on assistive technology can navigate to each section of the application and skip over content. You can use [ARIA roles](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles) to help you achieve this.
+Yer işaretleri, bir uygulama içindeki bölümlere programlı erişim sağlar. Yardımcı teknolojiye güvenen kullanıcılar, uygulamanın her bölümüne gidebilir ve içeriği atlayabilir. [ARIA rollerini](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles) arşivlemek için kullanabilirsiniz.
 
-| HTML            | ARIA Role                                                         | Landmark Purpose                                                                       |
-| --------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| header          | role="banner"                                                     | Prime heading: title of the page                                                       |
-| nav             | role="navigation"                                                 | Collection of links suitable for use when navigating the document or related documents |
-| main            | role="main"                                                       | The main or central content of the document.                                           |
-| footer          | role="contentinfo"                                                | Information about the parent document: footnotes/copyrights/links to privacy statement |
-| aside           | role="complementary"                                              | Supports the main content, yet is separated and meaningful on its own content            |
-| _Not available_ | role="search"                                                     | This section contains the search functionality for the application                     |
-| form            | role="form"                                                       | Collection of form-associated elements                                                 |
-| section         | role="region"  | Content that is relevant and that users will likely want to navigate to. Label must be provided for this element                |
+| HTML            | ARIA Rolü           | Yer İşaret Amacı                                                                                      |
+| --------------- | ------------------- | ----------------------------------------------------------------------------------------------------- |
+| header          | rol="banner"        | İlk başlık: sayfanın başlığı                                                                          |
+| nav             | rol="navigation"    | Sayfada veya ilgili sayfalarda gezinirken kullanıma uygun bağlantıların toplanması                    |
+| main            | rol="main"          | Sayfanın ana veya merkezi içeriği.                                                                    |
+| footer          | rol="contentinfo"   | Ana sayfa hakkında bilgiler: dipnotlar / telif hakları / gizlilik bildirimine bağlantılar             |
+| aside           | rol="complementary" | Ana içeriği destekler, ancak kendi içeriğine göre ayrılmış ve anlamlıdır                              |
+| _Not available_ | rol="search"        | Bu bölüm, uygulama için arama işlevini içerir.                                                        |
+| form            | rol="form"          | Formla ilişkili öğelerin toplanması                                                                   |
+| section         | rol="region"        | Alakalı ve kullanıcıların büyük olasılıkla gitmek isteyeceği içerik. Bu öğe için etiket sağlanmalıdır |
 
-:::tip Tip:
-It is recommended to use landmark HTML elements with redundant landmark role attributes in order to maximize compatibility with legacy [browsers that don’t support HTML5 semantic elements](https://caniuse.com/#feat=html5semantic).
+:::tip İpucu:
+[HTML5 semantik öğelerini desteklemeyen eski tarayıcılarla uyumluluğunu](https://caniuse.com/#feat=html5semantic) en üst düzeye çıkarmak için etkisiz yer işareti rol özniteliklerine sahip HTML öğelerinin kullanılması önerilir.
+
 :::
 
-[Read more about landmarks](https://www.w3.org/TR/wai-aria-1.2/#landmark_roles)
+[Yer işaretleri ile ilgili daha fazla bilgi](https://www.w3.org/TR/wai-aria-1.2/#landmark_roles)
