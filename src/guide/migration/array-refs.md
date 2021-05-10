@@ -67,6 +67,7 @@ export default {
 
 Not:
 
-- `itemRefs` bir dizi olmak zorunda değil: Bir nesne de olabilir ve refs'ler iteration öğesi ile tayin edilir.
+- `itemRefs` bir dizi olmak zorunda değil: Bir nesne de olabilir ve refs'ler iterasyon anahtarları ile tayin edilir.
+
 
 - Bu sayede gerekli olması halinde `itemRefs` reaktifleştirilebilir ve watch yöntemiyle izlenebilir.
