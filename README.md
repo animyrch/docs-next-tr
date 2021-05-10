@@ -11,7 +11,7 @@ Döküman yazmak konusunda kurallarımız ve önerilerimiz için [Vue Dokümanta
 1. Repomuzu klonluyoruz
 
 ```bash
-git clone git@github.com:tansionline/docs-next-tr.git
+git clone git@github.com:animyrch/docs-next-tr.git
 ```
 
 2. Paketlerimizi indiriyoruz
