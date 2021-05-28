@@ -1,7 +1,7 @@
 ---
 title: v-for Refs Dizileri
 badges:
-- kırıcı
+  - kırıcı
 ---
 
 # {{ $frontmatter.title }} <MigrationBadges :badges="$frontmatter.badges" />
